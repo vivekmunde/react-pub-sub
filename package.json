@@ -1,0 +1,55 @@
+{
+  "name": "react-pub-sub",
+  "version": "1.0.0",
+  "description": "React Publish-Subscribe for managing local state",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "clean": "rimraf ./dist",
+    "test": "jest",
+    "prepublish": "npm run clean && npm run build"
+  },
+  "author": "Vivek Munde",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vivekmunde/react-pub-sub.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vivekmunde/react-pub-sub/issues"
+  },
+  "files": [
+    "dist",
+    "src",
+    "index.js"
+  ],
+  "keywords": [
+    "react",
+    "reactjs",
+    "react publish subscribe",
+    "publish",
+    "subscribe",
+    "react state management"
+  ],
+  "homepage": "https://github.com/vivekmunde/react-pub-sub#readme",
+  "peerDependencies": {
+    "react": ">= 15 <= 16",
+    "react-dom": ">= 15 <= 16"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-react": "^7.0.0",
+    "babel-jest": "^24.8.0",
+    "babel-loader": "^8.0.6",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.14.0",
+    "jest": "^24.8.0",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7"
+  }
+}
