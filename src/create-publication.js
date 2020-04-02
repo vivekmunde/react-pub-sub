@@ -1,6 +1,6 @@
 const createPublication = (name) => {
     if (!name) {
-        console.warn('Publication name not provided. Publication name is helpful in debugging the issues.');
+        console.info('Recommended to provide publication name as it can be helpful in debugging the issues.');
     };
 
     return {

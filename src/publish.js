@@ -11,7 +11,7 @@ const publish = (publication, ...args) => {
         }
     }
     else {
-        console.warn(`Nobody subscribed for publication '${publication.name}'`);
+        console.info(`Nobody subscribed for publication '${publication.name}'`);
     }
 };
 
