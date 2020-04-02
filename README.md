@@ -2,7 +2,7 @@
 
 Simple `pub-sub` APIs & HOCs for [React](https://reactjs.org/) Components.
 
-### createPublication([name])
+## createPublication([name])
 **Parameters**:
 - `name`: *(Optional)* String 
 Publication name. Helpful in debugging. 
@@ -31,7 +31,7 @@ console.log(publication1 === publication2); //false
 ```
 
 
-### publish(publication [, ... nParams])
+## publish(publication [, ... nParams])
 **Parameters**:
 - `publication`: *(Required)* Object
 Publication object created using the api `createPublication()`
@@ -58,7 +58,7 @@ const RefreshPageDataButton = ({ company }) => (
 export default RefreshPageDataButton;
 ```
 
-### subscribe(publication, subscriber)
+## subscribe(publication, subscriber)
 **Parameters**:
 - `publication`: *(Required)* Object
 Publication object created using the api `createPublication`
@@ -103,7 +103,7 @@ class DashboardCompanySatistics extends React.Component {
 export default withPublish(DashboardCompanySatistics);
 ```
 
-### withPublish(Component)
+## withPublish(Component)
 **Parameters**:
 - `Component`: *(Required)* React Component
 
@@ -126,7 +126,7 @@ const RefreshPageDataButton = ({ publish, company }) => (
 export default withPublish(RefreshPageDataButton);
 ```
 
-### withSubscribe(Component)
+## withSubscribe(Component)
 **Parameters**:
 - `Component`: *(Required)* React Component
 
