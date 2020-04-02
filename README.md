@@ -161,3 +161,7 @@ class DashboardCompanySatistics extends React.Component {
 
 export default withPublish(DashboardCompanySatistics);
 ```
+
+## License
+
+MIT
