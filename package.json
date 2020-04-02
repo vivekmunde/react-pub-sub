@@ -1,7 +1,7 @@
 {
   "name": "react-pub-sub",
   "version": "1.0.0",
-  "description": "React Publish-Subscribe for managing local state",
+  "description": "Simple pub-sub implementation APIs & HOCs for React Components",
   "main": "./dist/index.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
@@ -26,10 +26,11 @@
   "keywords": [
     "react",
     "reactjs",
-    "react publish subscribe",
     "publish",
     "subscribe",
-    "react state management"
+    "pub-sub",
+    "react state management",
+    "react components communication"
   ],
   "homepage": "https://github.com/vivekmunde/react-pub-sub#readme",
   "peerDependencies": {
