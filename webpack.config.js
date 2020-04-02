@@ -33,7 +33,7 @@ module.exports = {
         path: path.resolve(__dirname, './dist'),
         filename: 'index.js',
         globalObject: 'this',
-        library: 'react-pub-sub',
+        library: 'react-pusu',
         libraryTarget: 'umd',
         publicPath: '/dist/',
         umdNamedDefine: true

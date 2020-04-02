@@ -1,4 +1,4 @@
-# react-pub-sub
+# react-pusu
 
 Simple `pub-sub` APIs & HOCs for [React](https://reactjs.org/) Components.
 
@@ -17,7 +17,7 @@ Creates & returns a unique new publication object. **Creation of the publication
 ```
 // refresh-page-data-publication.js
 
-import { createPublication } from 'react-pub-sub';
+import { createPublication } from 'react-pusu';
 
 export default createPublication('Refresh Page Data');
 ```
@@ -25,7 +25,7 @@ export default createPublication('Refresh Page Data');
 Below code create two separate unique publications `publication1` & `publication2` even though the name supplied is same. Name is just for the sake of naming the publication so that its useful during debugging any issues.
 
 ```
-import { createPublication } from 'react-pub-sub';
+import { createPublication } from 'react-pusu';
 
 const publication1 = createPublication('Refresh Page Data');
 const publication2 = createPublication('Refresh Page Data');
@@ -44,7 +44,7 @@ These parameters/arguments are passed as is to the subscribers listening to the 
 `publish` method calls all the subscribers subscribed to the `publication` (provided as a first argument). It calls the subscribers with all the rest of the arguments/data (`[, ... nParams]`).
 
 ```
-import { publish } from 'react-pub-sub';
+import { publish } from 'react-pusu';
 import refreshPageDataPublication from './publications/refresh-page-data-publication';
 
 const RefreshPageDataButton = ({ company }) => (
@@ -72,7 +72,7 @@ A subscriber function which will be called by the publisher. This function will 
 A function when called then the `subscriber` is unsubscribed and no longer called by the publisher.
 
 ```
-import { subscribe } from 'react-pub-sub';
+import { subscribe } from 'react-pusu';
 import refreshPageDataPublication from './publications/refresh-page-data-publication';
 
 class DashboardCompanySatistics extends React.Component {
@@ -116,7 +116,7 @@ export default withPublish(DashboardCompanySatistics);
 `withPublish` supplies the function `publish` as a property to the React Component. The Component can publish data using this function.
 
 ```
-import { withPublish } from 'react-pub-sub';
+import { withPublish } from 'react-pusu';
 import refreshPageDataPublication from './publications/refresh-page-data-publication';
 
 const RefreshPageDataButton = ({ publish, company }) => (
@@ -140,7 +140,7 @@ export default withPublish(RefreshPageDataButton);
 It makes sure that all the subscriptions are removed or unsubscribed before the component is unmounted. This way the consumer React Component can use the `props.subscribe`, even multiple times, without worrying about unsubscribing before its unmounted.
 
 ```
-import { withSubscribe } from 'react-pub-sub';
+import { withSubscribe } from 'react-pusu';
 import refreshPageDataPublication from './publications/refresh-page-data-publication';
 
 class DashboardCompanySatistics extends React.Component {

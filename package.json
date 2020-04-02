@@ -1,5 +1,5 @@
 {
-  "name": "react-pub-sub",
+  "name": "react-pusu",
   "version": "1.0.0",
   "description": "Simple pub-sub implementation APIs & HOCs for React Components",
   "main": "./dist/index.js",
@@ -13,10 +13,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vivekmunde/react-pub-sub.git"
+    "url": "git+https://github.com/vivekmunde/react-pusu.git"
   },
   "bugs": {
-    "url": "https://github.com/vivekmunde/react-pub-sub/issues"
+    "url": "https://github.com/vivekmunde/react-pusu/issues"
   },
   "files": [
     "dist",
@@ -32,7 +32,7 @@
     "react state management",
     "react components communication"
   ],
-  "homepage": "https://github.com/vivekmunde/react-pub-sub#readme",
+  "homepage": "https://github.com/vivekmunde/react-pusu#readme",
   "peerDependencies": {
     "react": ">= 15 <= 16",
     "react-dom": ">= 15 <= 16"
