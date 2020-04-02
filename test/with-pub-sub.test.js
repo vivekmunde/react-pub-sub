@@ -8,7 +8,9 @@ describe('with-pub-sub', () => {
     test('Should publish & call the subscribers with args', () => {
         expect.hasAssertions();
 
-        const testData = 'test-data';
+        const testData1 = 'test-data1';
+        const testData2 = { data: 'test-data2' };
+        const testData3 = ['test-data3'];
 
         const publication = createPublication('test');
 
@@ -16,7 +18,7 @@ describe('with-pub-sub', () => {
             <button
                 id="btn1"
                 onClick={() => {
-                    publish(publication, testData);
+                    publish(publication, testData1, testData2, testData3);
                 }}
             >
                 Publisher
@@ -28,13 +30,17 @@ describe('with-pub-sub', () => {
         class Subscriber1 extends React.Component {
             constructor(props, context) {
                 super(props, context);
-                this.state = { data: 'none' };
+                this.state = {
+                    data: {
+                        testData1: null, testData2: { data: null }, testData3: []
+                    }
+                };
                 props.subscribe(publication, this.subscriber);
             }
 
-            subscriber = (data) => {
-                this.setState({ data });
-                subscriber1Listener(data);
+            subscriber = (testData1, testData2, testData3) => {
+                this.setState({ data: { testData1, testData2, testData3 } });
+                subscriber1Listener(testData1, testData2, testData3);
             }
 
             render() {
@@ -42,7 +48,7 @@ describe('with-pub-sub', () => {
                     <div
                         id="div1"
                     >
-                        {this.state.data}
+                        {this.state.data.testData1}{this.state.data.testData2.data}{this.state.data.testData3.join('')}
                     </div>
                 )
             }
@@ -53,13 +59,17 @@ describe('with-pub-sub', () => {
         class Subscriber2 extends React.Component {
             constructor(props, context) {
                 super(props, context);
-                this.state = { data: 'none' };
+                this.state = {
+                    data: {
+                        testData1: null, testData2: { data: null }, testData3: []
+                    }
+                };
                 props.subscribe(publication, this.subscriber);
             }
 
-            subscriber = (data) => {
-                this.setState({ data });
-                subscriber2Listener(data);
+            subscriber = (testData1, testData2, testData3) => {
+                this.setState({ data: { testData1, testData2, testData3 } });
+                subscriber2Listener(testData1, testData2, testData3);
             }
 
             render() {
@@ -67,7 +77,7 @@ describe('with-pub-sub', () => {
                     <span
                         id="span2"
                     >
-                        {this.state.data}
+                        {this.state.data.testData1}{this.state.data.testData2.data}{this.state.data.testData3.join('')}
                     </span>
                 )
             }
@@ -84,13 +94,13 @@ describe('with-pub-sub', () => {
             </div>
         );
 
-        expect(wrapper.find('#div1').text()).toEqual('none');
-        expect(wrapper.find('#span2').text()).toEqual('none');
+        expect(wrapper.find('#div1').text()).toEqual('');
+        expect(wrapper.find('#span2').text()).toEqual('');
 
         wrapper.find('#btn1').simulate('click');
 
-        expect(wrapper.find('#div1').text()).toEqual(testData);
-        expect(wrapper.find('#span2').text()).toEqual(testData);
+        expect(wrapper.find('#div1').text()).toEqual(`${testData1}${testData2.data}${testData3.join()}`);
+        expect(wrapper.find('#span2').text()).toEqual(`${testData1}${testData2.data}${testData3.join()}`);
         expect(subscriber1Listener).toHaveBeenCalledTimes(1);
         expect(subscriber2Listener).toHaveBeenCalledTimes(1);
     });
