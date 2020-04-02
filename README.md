@@ -2,6 +2,9 @@
 
 Simple `pub-sub` APIs & HOCs for [React](https://reactjs.org/) Components.
 
+> **Pub-Sub** implementation is most useful when the components, which are rendered across the page under different component hierarchies, need to communicate with each other.
+A simple example can be (may not be ideal), a data refresh button placed in the header of the application. On click of this button the page should reload the data from server. There can be multiple pages which may need this type of functionality. Also, there can be multiple sections on a page which need to reload the data using their own API calls (may be using redux). So all these pages & components can actually subscribe to the refresh publication event. The refresh button can, on click, publish the event. And then all the subscribers can reload the data (may be using redux) from server by calling their own apis.
+
 ## createPublication([name])
 **Parameters**:
 - `name`: *(Optional)* String 
