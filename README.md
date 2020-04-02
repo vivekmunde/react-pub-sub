@@ -89,6 +89,9 @@ class DashboardCompanySatistics extends React.Component {
 		if(this.unsubscribe) {
 			this.unsubscribe();
 		}
+
+		// Note: 
+		// Using HOC `withSubscribe` removes the need of above unsubscribe implementation, which is explained in the next sections. 
 	}
 	
 	render() {
