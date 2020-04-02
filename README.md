@@ -45,14 +45,14 @@ import { publish } from 'react-pub-sub';
 import refreshPageDataPublication from './publications/refresh-page-data-publication';
 
 const RefreshPageDataButton = ({ company }) => (
-	<button
-		onClick={()=> {
-			// Publish the data 
-			publish(publication, new Date(), company._id);
-		}}
-	>
-		Refresh
-	</button>
+  <button
+    onClick={()=> {
+      // Publish the data 
+      publish(publication, new Date(), company._id);
+    }}
+  >
+    Refresh
+  </button>
 );
 
 export default RefreshPageDataButton;
@@ -73,34 +73,34 @@ import { subscribe } from 'react-pub-sub';
 import refreshPageDataPublication from './publications/refresh-page-data-publication';
 
 class DashboardCompanySatistics extends React.Component {
-	constructor(props, context) {
-		super(props, context);
+  constructor(props, context) {
+    super(props, context);
 
-		// Subscribe to the publication
-		this.unsubscribe = props.subscribe(refreshPageDataPublication, this.refreshData);
-	}
+    // Subscribe to the publication
+    this.unsubscribe = props.subscribe(refreshPageDataPublication, this.refreshData);
+  }
 
-	refreshData = (asOf, companyId) => {
-		// load the data as of "asOf" date (may be using redux)
-	}
+  refreshData = (asOf, companyId) => {
+    // load the data as of "asOf" date (may be using redux)
+  }
 
-	componentWillUnmount() {
-		// Unsubscribe from the publication
-		if(this.unsubscribe) {
-			this.unsubscribe();
-		}
+  componentWillUnmount() {
+    // Unsubscribe from the publication
+    if(this.unsubscribe) {
+      this.unsubscribe();
+    }
 
-		// Note: 
-		// Using HOC `withSubscribe` removes the need of above unsubscribe implementation, which is explained in the next sections. 
-	}
-	
-	render() {
-		return (
-			<section>
-				// render the statistics here ...
-			</section>
-		);
-	}
+    // Note: 
+    // Using HOC `withSubscribe` removes the need of above unsubscribe implementation, which is explained in the next sections. 
+  }
+  
+  render() {
+    return (
+      <section>
+        // render the statistics here ...
+      </section>
+    );
+  }
 }
 
 export default withPublish(DashboardCompanySatistics);
@@ -117,13 +117,13 @@ import { withPublish } from 'react-pub-sub';
 import refreshPageDataPublication from './publications/refresh-page-data-publication';
 
 const RefreshPageDataButton = ({ publish, company }) => (
-	<button
-		onClick={()=> {
-			publish(publication, new Date(), company._id);
-		}}
-	>
-		Refresh
-	</button>
+  <button
+    onClick={()=> {
+      publish(publication, new Date(), company._id);
+    }}
+  >
+    Refresh
+  </button>
 );
 
 export default withPublish(RefreshPageDataButton);
@@ -141,22 +141,22 @@ import { withSubscribe } from 'react-pub-sub';
 import refreshPageDataPublication from './publications/refresh-page-data-publication';
 
 class DashboardCompanySatistics extends React.Component {
-	constructor(props, context) {
-		super(props, context);
-		props.subscribe(refreshPageDataPublication, this.refreshData);
-	}
+  constructor(props, context) {
+    super(props, context);
+    props.subscribe(refreshPageDataPublication, this.refreshData);
+  }
 
-	refreshData = (asOf, companyId) => {
-		// load the data as of "asOf" date (may be using redux)
-	}
-	
-	render() {
-		return (
-			<section>
-				// render the statistics here ...
-			</section>
-		);
-	}
+  refreshData = (asOf, companyId) => {
+    // load the data as of "asOf" date (may be using redux)
+  }
+  
+  render() {
+    return (
+      <section>
+        // render the statistics here ...
+      </section>
+    );
+  }
 }
 
 export default withPublish(DashboardCompanySatistics);
