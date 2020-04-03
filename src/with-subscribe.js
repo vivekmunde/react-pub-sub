@@ -1,9 +1,9 @@
 import React from 'react';
 import _subscribe from './subscribe';
 
-const withSubscribe = Component => {
+export default function withSubscribe(Component) {
 
-    class Subscribe extends React.Component {
+    return class Subscribe extends React.Component {
 
         subscriptions = []
 
@@ -29,7 +29,4 @@ const withSubscribe = Component => {
         }
     }
 
-    return Subscribe;
 }
-
-export default withSubscribe;

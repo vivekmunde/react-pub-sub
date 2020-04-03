@@ -1,9 +1,9 @@
 import React from 'react';
 import _publish from './publish';
 
-const withPublish = Component => {
+export default function withPublish(Component) {
 
-    class Publish extends React.Component {
+    return class Publish extends React.Component {
 
         publish = (publication, ...args) => {
             _publish(publication, ...args);
@@ -20,8 +20,4 @@ const withPublish = Component => {
 
     }
 
-    return Publish;
-
 }
-
-export default withPublish;

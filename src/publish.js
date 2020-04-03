@@ -1,18 +1,5 @@
-import validatePublicationSchema from './validate-publication-schema';
-
-const publish = (publication, ...args) => {
-    validatePublicationSchema(publication);
-
-    const { subscribers } = publication;
-
-    if (subscribers.length > 0) {
-        for (const subscriber of subscribers) {
-            subscriber(...args);
-        }
+export default function publish(publication, ...args) {
+    for (const subscriber of publication.subscribers) {
+        subscriber(...args);
     }
-    else {
-        console.info(`Nobody subscribed for publication '${publication.name}'`);
-    }
-};
-
-export default publish;
+}

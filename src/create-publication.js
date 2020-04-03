@@ -1,12 +1,6 @@
-const createPublication = (name) => {
-    if (!name) {
-        console.info('Recommended to provide publication name as it can be helpful in debugging the issues.');
-    };
-
+export default function createPublication(name = 'anonymous') {
     return {
-        name: name || 'anonymous',
+        name,
         subscribers: [],
     };
-};
-
-export default createPublication;
+}

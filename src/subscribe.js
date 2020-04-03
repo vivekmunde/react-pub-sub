@@ -1,24 +1,13 @@
-import validatePublicationSchema from './validate-publication-schema';
-
-const subscribe = (publication, subscriber) => {
-    validatePublicationSchema(publication);
-
+export default function subscribe(publication, subscriber) {
     const { subscribers } = publication;
 
     subscribers.push(subscriber);
 
-    const unsubscribe = () => {
+    return function unsubscribe() {
         const index = subscribers.indexOf(subscriber);
 
         if (index > -1) {
             subscribers.splice(index, 1);
         }
-        else {
-            console.warn(`Subscriber was already unsubscribed from publication '${publication.name}'.`);
-        }
     };
-
-    return unsubscribe;
-};
-
-export default subscribe;
+}

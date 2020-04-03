@@ -3,6 +3,16 @@ import publish from '../src/publish';
 import subscribe from '../src/subscribe';
 
 describe('pub-sub', () => {
+    test('Should not error when publishing a publication without any subscribers', () => {
+        expect.hasAssertions();
+
+        const publication = createPublication('test');
+
+        publish(publication);
+
+        expect(true).toBe(true);
+    });
+
     test('Should publish & call the subscribers with args', () => {
         expect.hasAssertions();
 
@@ -25,6 +35,48 @@ describe('pub-sub', () => {
 
         unsubscribe1();
         unsubscribe2();
+    });
+
+    test('Should not call the subscriber after unsubscribing', () => {
+        expect.hasAssertions();
+
+        const publication = createPublication('test');
+
+        const subscriber = jest.fn(val => val);
+
+        const unsubscribe = subscribe(publication, subscriber);
+
+        publish(publication);
+
+        expect(subscriber).toHaveBeenCalledTimes(1);
+
+        unsubscribe();
+
+        publish(publication);
+
+        expect(subscriber).toHaveBeenCalledTimes(1);
+    });
+
+    test('Should not error on multiple calls to unsubscribe', () => {
+        expect.hasAssertions();
+
+        const publication = createPublication('test');
+
+        const subscriber = jest.fn(val => val);
+
+        const unsubscribe = subscribe(publication, subscriber);
+
+        publish(publication);
+
+        expect(subscriber).toHaveBeenCalledTimes(1);
+
+        unsubscribe();
+        unsubscribe();
+        unsubscribe();
+
+        publish(publication);
+
+        expect(subscriber).toHaveBeenCalledTimes(1);
     });
 
     test('Should remove subscribers on unsubscribe', () => {
