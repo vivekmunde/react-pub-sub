@@ -1,5 +1,5 @@
 import React from 'react';
-import _publish from './publish';
+import { publish as _publish } from 'pusu';
 
 export default function withPublish(Component) {
 
