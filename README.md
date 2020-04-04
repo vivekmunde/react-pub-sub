@@ -66,6 +66,7 @@ export default withPublish(RefreshPageDataButton);
 - `Component`: *(Required)* - React Component
 
 `withSubscribe` supplies a function `subscribe` as a property to the React Component. The Component can subscribe to the publication and can receive the data using this function, whenver the publisher publishes it.
+
 **`withSubscribe` makes sure that all the subscriptions are removed/unsubscribed before the component is unmounted.** This way the consumer React Component can use the `props.subscribe`, even multiple times, without worrying about unsubscribing before it is unmounted.
 
 ```
@@ -79,7 +80,42 @@ class DashboardCompanySatistics extends React.Component {
   }
 
   refreshData = (asOf, companyId) => {
-    // load the data as of "asOf" date (may be using redux)
+    // load the data (may be using redux)
+  }
+  
+  render() {
+    return (
+      <section>
+        // render the statistics here ...
+      </section>
+    );
+  }
+}
+
+export default withSubscribe(DashboardCompanySatistics);
+```
+
+`props.subscribe`, when called, returns a function which can be called to unsubscribe from the publication. Sometimes component may need to unsubscribe based on some condition or action, for those cases the function returned by `props.subscribe` can be called to unsubscribe.
+
+```
+import { withSubscribe } from 'react-pusu';
+import refreshPageDataPublication from './publications/refresh-page-data-publication';
+
+class DashboardCompanySatistics extends React.Component {
+  constructor(props, context) {
+    super(props, context);
+
+    // Assign the unsubscriber function to the class member/variable
+    this.unsubscribeFromRefreshPublication = props.subscribe(refreshPageDataPublication, this.refreshData);
+  }
+
+  refreshData = (asOf, companyId) => {
+    // load the data (may be using redux)
+  }
+
+  onSomeAction = () => {
+    // Unsubscribe from publication
+    this.unsubscribeFromRefreshPublication();
   }
   
   render() {
@@ -139,7 +175,7 @@ class DashboardCompanySatistics extends React.Component {
   }
 
   refreshData = (asOf, companyId) => {
-    // load the data as of "asOf" date (may be using redux)
+    // load the data (may be using redux)
   }
 
   componentWillUnmount() {
