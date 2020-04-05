@@ -1,6 +1,4 @@
-import createPublication from './src/create-publication';
-import publish from './src/publish';
-import subscribe from './src/subscribe';
+import { createPublication, publish, subscribe } from 'pusu';
 import withPublish from './src/with-publish';
 import withSubscribe from './src/with-subscribe';
 

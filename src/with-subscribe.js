@@ -1,14 +1,16 @@
 import React from 'react';
-import _subscribe from './subscribe';
+import { subscribe as _subscribe } from 'pusu';
 
-const withSubscribe = Component => {
+export default function withSubscribe(Component) {
 
-    class Subscribe extends React.Component {
+    return class Subscribe extends React.Component {
 
         subscriptions = []
 
         subscribe = (publication, subscriber) => {
-            this.subscriptions.push(_subscribe(publication, subscriber));
+            const unsubscribe = _subscribe(publication, subscriber);
+            this.subscriptions.push(unsubscribe);
+            return unsubscribe;
         }
 
         unsubscribeAll = () => {
@@ -29,7 +31,4 @@ const withSubscribe = Component => {
         }
     }
 
-    return Subscribe;
 }
-
-export default withSubscribe;

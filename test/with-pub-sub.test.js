@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import createPublication from '../src/create-publication';
+import { createPublication } from 'pusu';
 import withPublish from '../src/with-publish';
 import withSubscribe from '../src/with-subscribe';
 
@@ -220,5 +220,168 @@ describe('with-pub-sub', () => {
         expect(subscriber2Listener).toHaveBeenCalledWith(testData);
         expect(subscriber1Listener).toHaveBeenCalledTimes(3);
         expect(subscriber2Listener).toHaveBeenCalledTimes(2);
+    });
+
+    test('Should unsubscribe when called to unsubscribe explicitely', () => {
+        expect.hasAssertions();
+
+        const testData1 = 'test-data1';
+
+        const publication = createPublication('test');
+
+        const PublisherHoc = withPublish(({ publish }) => (
+            <button
+                id="btn1"
+                onClick={() => {
+                    publish(publication, testData1);
+                }}
+            >
+                Publisher
+            </button>
+        ));
+
+        const subscriber1Listener = jest.fn(() => { });
+
+        class Subscriber1 extends React.Component {
+            constructor(props, context) {
+                super(props, context);
+                this.state = {
+                    data: {
+                        testData1: null, testData2: { data: null }, testData3: []
+                    }
+                };
+                this.unsubscribe = props.subscribe(publication, this.subscriber);
+            }
+
+            subscriber = (testData1) => {
+                this.setState({ data: { testData1 } });
+                subscriber1Listener(testData1);
+            }
+
+            handleUnsubscribe = () => {
+                this.unsubscribe();
+            }
+
+            render() {
+                return (
+                    <div>
+                        <div
+                            id="div1"
+                        >
+                            {this.state.data.testData1}
+                        </div>
+                        <button
+                            id="btn2"
+                            onClick={this.handleUnsubscribe}
+                        >
+                            Unsubscribe
+                        </button>
+                    </div>
+                )
+            }
+        }
+
+        const SubscriberHoc1 = withSubscribe(Subscriber1);
+
+        const wrapper = mount(
+            <div>
+                <PublisherHoc />
+                <SubscriberHoc1 />
+            </div>
+        );
+
+        wrapper.find('#btn1').simulate('click');
+
+        expect(subscriber1Listener).toHaveBeenCalledTimes(1);
+
+        wrapper.find('#btn1').simulate('click');
+
+        expect(subscriber1Listener).toHaveBeenCalledTimes(2);
+
+        wrapper.find('#btn2').simulate('click');
+
+        wrapper.find('#btn1').simulate('click');
+
+        expect(subscriber1Listener).toHaveBeenCalledTimes(2);
+    });
+
+    test('Should not error on calling unsubscribe again even when it was unsubscribed explicitely before component removal', () => {
+        expect.hasAssertions();
+
+        const testData1 = 'test-data1';
+
+        const publication = createPublication('test');
+
+        const PublisherHoc = withPublish(({ publish }) => (
+            <button
+                id="btn1"
+                onClick={() => {
+                    publish(publication, testData1);
+                }}
+            >
+                Publisher
+            </button>
+        ));
+
+        const subscriber1Listener = jest.fn(() => { });
+
+        class Subscriber1 extends React.Component {
+            constructor(props, context) {
+                super(props, context);
+                this.state = {
+                    data: {
+                        testData1: null, testData2: { data: null }, testData3: []
+                    }
+                };
+                this.unsubscribe = props.subscribe(publication, this.subscriber);
+            }
+
+            subscriber = (testData1) => {
+                this.setState({ data: { testData1 } });
+                subscriber1Listener(testData1);
+            }
+
+            handleUnsubscribe = () => {
+                this.unsubscribe();
+            }
+
+            render() {
+                return (
+                    <div>
+                        <div
+                            id="div1"
+                        >
+                            {this.state.data.testData1}
+                        </div>
+                        <button
+                            id="btn2"
+                            onClick={this.handleUnsubscribe}
+                        >
+                            Unsubscribe
+                        </button>
+                    </div>
+                )
+            }
+        }
+
+        const SubscriberHoc1 = withSubscribe(Subscriber1);
+
+        const wrapper1 = mount(
+            <PublisherHoc />
+        );
+
+        const wrapper2 = mount(
+            <SubscriberHoc1 />
+        );
+
+        wrapper1.find('#btn1').simulate('click');
+
+        wrapper2.find('#btn2').simulate('click');
+
+        wrapper2.unmount();
+
+        wrapper1.find('#btn1').simulate('click');
+
+        expect(subscriber1Listener).toHaveBeenCalledTimes(1);
     });
 });

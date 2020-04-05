@@ -5,6 +5,8 @@ Simple `pub-sub` implementation APIs & HOCs for [React](https://reactjs.org/) Co
 > **Pub-Sub** implementation is one of the effective ways and most useful when the components, which are rendered across the page, even under different component hierarchies, need to communicate with each other.
 A simple example can be, a data refresh button placed in the header of the application. On click of this button the page should reload the data from server. There can be multiple pages which may need this type of functionality. Also, there can be multiple sections on a page which need to reload the data using their own API calls (may be using redux). So all these pages & components can actually subscribe to the refresh publication event. The refresh button can, on click, publish the event. And then all the subscribers can reload the data (may be using redux) from server by calling their own apis.
 
+**Size**: Minified: 10.2kB | Minified+Gzipped: 2.2kB
+
 ## createPublication([name])
 **Parameters**:
 - `name`: *(Optional)* String - Publication name
@@ -64,6 +66,7 @@ export default withPublish(RefreshPageDataButton);
 - `Component`: *(Required)* - React Component
 
 `withSubscribe` supplies a function `subscribe` as a property to the React Component. The Component can subscribe to the publication and can receive the data using this function, whenver the publisher publishes it.
+
 **`withSubscribe` makes sure that all the subscriptions are removed/unsubscribed before the component is unmounted.** This way the consumer React Component can use the `props.subscribe`, even multiple times, without worrying about unsubscribing before it is unmounted.
 
 ```
@@ -77,7 +80,43 @@ class DashboardCompanySatistics extends React.Component {
   }
 
   refreshData = (asOf, companyId) => {
-    // load the data as of "asOf" date (may be using redux)
+    // load the data (may be using redux)
+  }
+  
+  render() {
+    return (
+      <section>
+        // render the statistics here ...
+      </section>
+    );
+  }
+}
+
+export default withSubscribe(DashboardCompanySatistics);
+```
+
+#### Unsubscribing explicitely 
+`props.subscribe`, when called, returns a function which can be called to unsubscribe from the publication. Sometimes component may need to unsubscribe based on some condition or action, for those cases the function returned by `props.subscribe` can be called to unsubscribe.
+
+```
+import { withSubscribe } from 'react-pusu';
+import refreshPageDataPublication from './publications/refresh-page-data-publication';
+
+class DashboardCompanySatistics extends React.Component {
+  constructor(props, context) {
+    super(props, context);
+
+    // Assign the unsubscriber function to the class member/variable
+    this.unsubscribeFromRefreshPublication = props.subscribe(refreshPageDataPublication, this.refreshData);
+  }
+
+  refreshData = (asOf, companyId) => {
+    // load the data (may be using redux)
+  }
+
+  onSomeAction = () => {
+    // Unsubscribe from publication
+    this.unsubscribeFromRefreshPublication();
   }
   
   render() {
@@ -137,7 +176,7 @@ class DashboardCompanySatistics extends React.Component {
   }
 
   refreshData = (asOf, companyId) => {
-    // load the data as of "asOf" date (may be using redux)
+    // load the data (may be using redux)
   }
 
   componentWillUnmount() {
