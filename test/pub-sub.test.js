@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { mount } from 'enzyme';
-import { createPublication } from 'pusu';
-import withPublish from '../src/with-publish';
+import { createPublication, publish } from 'pusu';
 import withSubscribe from '../src/with-subscribe';
 import useSubscribe from '../src/use-subscribe';
 
@@ -15,7 +14,7 @@ describe('with-pub-sub', () => {
 
     const publication = createPublication('test');
 
-    const PublisherHoc = withPublish(({ publish }) => (
+    const PublisherHoc = () => (
       <button
         id="btn1"
         onClick={() => {
@@ -24,7 +23,7 @@ describe('with-pub-sub', () => {
       >
         Publisher
       </button>
-    ));
+    );
 
     const subscriber1Listener = jest.fn(() => { });
 
@@ -111,7 +110,7 @@ describe('with-pub-sub', () => {
 
     const publication = createPublication('test');
 
-    const PublisherHoc = withPublish(({ publish }) => (
+    const PublisherHoc = () => (
       <button
         id="btn1"
         onClick={() => {
@@ -120,7 +119,7 @@ describe('with-pub-sub', () => {
       >
         Publisher
       </button>
-    ));
+    );
 
     const subscriber1Listener = jest.fn(() => { });
 
@@ -226,7 +225,7 @@ describe('with-pub-sub', () => {
 
     const publication = createPublication('test');
 
-    const PublisherHoc = withPublish(({ publish }) => (
+    const PublisherHoc = () => (
       <button
         id="btn1"
         onClick={() => {
@@ -235,7 +234,7 @@ describe('with-pub-sub', () => {
       >
         Publisher
       </button>
-    ));
+    );
 
     const subscriber1Listener = jest.fn(() => { });
     const subscriber2Listener = jest.fn(() => { });
@@ -355,7 +354,7 @@ describe('with-pub-sub', () => {
 
     const publication = createPublication('test');
 
-    const PublisherHoc = withPublish(({ publish }) => (
+    const PublisherHoc = () => (
       <button
         id="btn1"
         onClick={() => {
@@ -364,7 +363,7 @@ describe('with-pub-sub', () => {
       >
         Publisher
       </button>
-    ));
+    );
 
     const subscriber1Listener = jest.fn(() => { });
     const subscriber2Listener = jest.fn(() => { });
