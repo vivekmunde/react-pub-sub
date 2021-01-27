@@ -46,6 +46,78 @@ const publication2 = createPublication('Refresh Page Data');
 console.log(publication1 === publication2); //false
 ```
 
+## publish(publication [, ... nParams])
+**Parameters**:
+- `publication`: *(Required)* Object - Publication object created using the api `createPublication()`
+- `[, ... nParams]`: *(Optional)* Any - These parameters/arguments are passed as is to the subscribers listening to the publication. Its a way of passing data to the subscribers.
+
+`publish` method calls all the subscribers subscribed to the `publication` (provided as a first argument). It calls the subscribers with all the rest of the arguments/data (`[, ... nParams]`).
+
+```
+import { publish } from 'react-pusu';
+import refreshPageDataPublication from './publications/refresh-page-data-publication';
+
+const RefreshPageDataButton = ({ company }) => (
+  <button
+    onClick={()=> {
+      // Publish the data 
+      publish(publication, new Date(), company._id);
+    }}
+  >
+    Refresh
+  </button>
+);
+
+export default RefreshPageDataButton;
+```
+
+## subscribe(publication, subscriber)
+**Parameters**:
+- `publication`: *(Required)* Object - Publication object created using the api `createPublication`
+- `subscriber`: *(Required)* Function - A subscriber function which will be called by the publisher. This function will receive any argument(s) i.e. data published by the publisher.
+
+**Return value**: Function - A function when called then the `subscriber` is unsubscribed and no longer called by the publisher.
+
+> Using HOC `withSubscribe` or hook `useSubscribe` removes the need of unsubscribe implementation, which is explained in the later sections.
+
+```
+import { subscribe } from 'react-pusu';
+import refreshPageDataPublication from './publications/refresh-page-data-publication';
+
+class DashboardCompanySatistics extends React.Component {
+  constructor(props, context) {
+    super(props, context);
+
+    // Subscribe to the publication
+    this.unsubscribe = props.subscribe(refreshPageDataPublication, this.refreshData);
+  }
+
+  refreshData = (asOf, companyId) => {
+    // load the data (may be using redux)
+  }
+
+  componentWillUnmount() {
+    // Unsubscribe from the publication
+    if(this.unsubscribe) {
+      this.unsubscribe();
+    }
+
+    // Note: 
+    // Using HOC `withSubscribe` or hook `useSubscribe` removes the need of above unsubscribe implementation, which is explained in the later sections. 
+  }
+  
+  render() {
+    return (
+      <section>
+        // render the statistics here ...
+      </section>
+    );
+  }
+}
+
+export default DashboardCompanySatistics;
+```
+
 ## withSubscribe(Component)
 **Parameters**:
 - `Component`: *(Required)* - React Component
@@ -176,76 +248,6 @@ const DashboardCompanySatistics = () => {
     </section>
   );
 };
-
-export default DashboardCompanySatistics;
-```
-
-## publish(publication [, ... nParams])
-**Parameters**:
-- `publication`: *(Required)* Object - Publication object created using the api `createPublication()`
-- `[, ... nParams]`: *(Optional)* Any - These parameters/arguments are passed as is to the subscribers listening to the publication. Its a way of passing data to the subscribers.
-
-`publish` method calls all the subscribers subscribed to the `publication` (provided as a first argument). It calls the subscribers with all the rest of the arguments/data (`[, ... nParams]`).
-
-```
-import { publish } from 'react-pusu';
-import refreshPageDataPublication from './publications/refresh-page-data-publication';
-
-const RefreshPageDataButton = ({ company }) => (
-  <button
-    onClick={()=> {
-      // Publish the data 
-      publish(publication, new Date(), company._id);
-    }}
-  >
-    Refresh
-  </button>
-);
-
-export default RefreshPageDataButton;
-```
-
-## subscribe(publication, subscriber)
-**Parameters**:
-- `publication`: *(Required)* Object - Publication object created using the api `createPublication`
-- `subscriber`: *(Required)* Function - A subscriber function which will be called by the publisher. This function will receive any argument(s) i.e. data published by the publisher.
-
-**Return value**: Function - A function when called then the `subscriber` is unsubscribed and no longer called by the publisher.
-
-```
-import { subscribe } from 'react-pusu';
-import refreshPageDataPublication from './publications/refresh-page-data-publication';
-
-class DashboardCompanySatistics extends React.Component {
-  constructor(props, context) {
-    super(props, context);
-
-    // Subscribe to the publication
-    this.unsubscribe = props.subscribe(refreshPageDataPublication, this.refreshData);
-  }
-
-  refreshData = (asOf, companyId) => {
-    // load the data (may be using redux)
-  }
-
-  componentWillUnmount() {
-    // Unsubscribe from the publication
-    if(this.unsubscribe) {
-      this.unsubscribe();
-    }
-
-    // Note: 
-    // Using HOC `withSubscribe` removes the need of above unsubscribe implementation, which was explained in the earlier section. 
-  }
-  
-  render() {
-    return (
-      <section>
-        // render the statistics here ...
-      </section>
-    );
-  }
-}
 
 export default DashboardCompanySatistics;
 ```
