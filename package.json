@@ -1,7 +1,7 @@
 {
   "name": "react-pusu",
   "version": "2.0.0",
-  "description": "Simple pub-sub implementation APIs & HOCs for React Components",
+  "description": "Simple pub-sub implementation APIs for React Components",
   "main": "./dist/index.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
