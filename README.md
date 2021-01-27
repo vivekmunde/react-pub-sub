@@ -1,8 +1,6 @@
-# react-pusu
+# react-pusu 
 
 Simple `pub-sub` implementation APIs, HOCs & Hooks for [React](https://reactjs.org/) Components.
-
-> Each publication is unique in itself and removes the need of maintaining a unique key for each publication
 
 > **Pub-Sub** implementation is one of the effective ways and most useful when the components, which are rendered across the page, even under different component hierarchies, need to communicate with each other.
 A simple example can be, a data refresh button placed in the header of the application. On click of this button the page should reload the data from server. There can be multiple pages which may need this type of functionality. Also, there can be multiple sections on a page which need to reload the data using their own API calls (may be using redux). So all these pages & components can actually subscribe to the refresh publication event. The refresh button can, on click, publish the event. And then all the subscribers can reload the data (may be using redux) from server by calling their own apis.
@@ -15,11 +13,11 @@ A simple example can be, a data refresh button placed in the header of the appli
 
 ## createPublication([name])
 **Parameters**:
-- `name`: *(Optional)* String - Publication name
+- `name`: *(Optional)* String - Publication name. Useful in debugging.
 
 **Return value**: Object - New publication
 
-Creates & returns a unique new publication object. **Creation of the publication in this way makes sure that each publication is unique in itself and removes the need of maintaining a unique key for each publication.**
+Creates & returns a unique new publication object.
 
 Publication object is a simple javascript object `{ subscribers: [] }` which has an array named `subscribers`. The array `subscribers` actually holds the references to the subscriber functions. Result is, all the subscribers (i.e. functions) of the publication are mapped inside the publication object itself. Whenever a publiser publishes any data for a publication then all the subscribers inside the publication are called with this data.
 
@@ -30,6 +28,10 @@ import { createPublication } from 'react-pusu';
 
 export default createPublication('Refresh Page Data');
 ```
+
+### ***Unique publication every time***
+
+**Creation of a publication makes sure that each publication is unique in itself and removes the need of maintaining a unique key for each publication.**
 
 Even if multiple publications created with same `name`, then each publication will be treated as a separate publication without any conflicts.
 
@@ -152,7 +154,7 @@ import { useSubscribe } from 'react-pusu';
 import refreshPageDataPublication from './publications/refresh-page-data-publication';
 
 const DashboardCompanySatistics = () => {
-  const ref = useRef({unsubscribeFromRefreshPublication: () => {}});
+  const ref = useRef({ unsubscribeFromRefreshPublication: () => {} });
   const subscribe = useSubscribe();
   
   useEffect(() => {
@@ -160,7 +162,7 @@ const DashboardCompanySatistics = () => {
       // load the data (may be using redux)
     }
 
-    ref.current.unsubscribe = subscribe(refreshPageDataPublication, refreshData);
+    ref.current.unsubscribeFromRefreshPublication = subscribe(refreshPageDataPublication, refreshData);
   }
   
   const onSomeAction = () => {
