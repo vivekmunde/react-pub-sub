@@ -1,9 +1,17 @@
 # react-pusu
 
-Simple `pub-sub` implementation APIs & HOCs for [React](https://reactjs.org/) Components.
+Simple `pub-sub` implementation APIs, HOCs & Hooks for [React](https://reactjs.org/) Components.
+
+> Each publication is unique in itself and removes the need of maintaining a unique key for each publication
 
 > **Pub-Sub** implementation is one of the effective ways and most useful when the components, which are rendered across the page, even under different component hierarchies, need to communicate with each other.
 A simple example can be, a data refresh button placed in the header of the application. On click of this button the page should reload the data from server. There can be multiple pages which may need this type of functionality. Also, there can be multiple sections on a page which need to reload the data using their own API calls (may be using redux). So all these pages & components can actually subscribe to the refresh publication event. The refresh button can, on click, publish the event. And then all the subscribers can reload the data (may be using redux) from server by calling their own apis.
+
+## Compatibility
+| React Version | react-pusu Compatibility |
+|--|--|
+| >= React@16.8 | ^2.0.0 |
+| React@15, <= React@16.7 | ^1.0.0 |
 
 ## createPublication([name])
 **Parameters**:
@@ -34,29 +42,6 @@ const publication1 = createPublication('Refresh Page Data');
 const publication2 = createPublication('Refresh Page Data');
 
 console.log(publication1 === publication2); //false
-```
-
-## withPublish(Component)
-**Parameters**:
-- `Component`: *(Required)* - React Component
-
-`withPublish` supplies the function `publish` as a property to the React Component. The Component can publish data using this function.
-
-```
-import { withPublish } from 'react-pusu';
-import refreshPageDataPublication from './publications/refresh-page-data-publication';
-
-const RefreshPageDataButton = ({ publish, company }) => (
-  <button
-    onClick={()=> {
-      publish(publication, new Date(), company._id);
-    }}
-  >
-    Refresh
-  </button>
-);
-
-export default withPublish(RefreshPageDataButton);
 ```
 
 ## withSubscribe(Component)
@@ -127,6 +112,70 @@ class DashboardCompanySatistics extends React.Component {
 }
 
 export default withSubscribe(DashboardCompanySatistics);
+```
+
+## useSubscribe()
+`useSubscribe` hook returns a function `subscribe`. The Component can subscribe to the publication and can receive the data using this `subscribe` function, whenver the publisher publishes it.
+
+**`useSubscribe` makes sure that all the subscriptions are removed/unsubscribed before the component is unmounted.** This way the consumer React Component can use the `subscribe`, even multiple times, without worrying about unsubscribing before it is unmounted.
+
+```
+import { useSubscribe } from 'react-pusu';
+import refreshPageDataPublication from './publications/refresh-page-data-publication';
+
+const DashboardCompanySatistics = () => {
+  const subscribe = useSubscribe();
+  
+  useEffect(() => {
+    const refreshData = (asOf, companyId) => {
+      // load the data (may be using redux)
+    }
+
+    subscribe(refreshPageDataPublication, refreshData);
+  }
+   
+  return (
+    <section>
+      // render the statistics here ...
+    </section>
+  );
+};
+
+export default DashboardCompanySatistics;
+```
+
+#### Unsubscribing explicitely 
+`subscribe`, when called, returns a function which can be called to unsubscribe from the publication. Sometimes component may need to unsubscribe based on some condition or action, for those cases the function returned by `subscribe` can be called to unsubscribe.
+
+```
+import { useSubscribe } from 'react-pusu';
+import refreshPageDataPublication from './publications/refresh-page-data-publication';
+
+const DashboardCompanySatistics = () => {
+  const ref = useRef({unsubscribeFromRefreshPublication: () => {}});
+  const subscribe = useSubscribe();
+  
+  useEffect(() => {
+    const refreshData = (asOf, companyId) => {
+      // load the data (may be using redux)
+    }
+
+    ref.current.unsubscribe = subscribe(refreshPageDataPublication, refreshData);
+  }
+  
+  const onSomeAction = () => {
+    // Unsubscribe from publication
+    ref.current.unsubscribeFromRefreshPublication();
+  }
+   
+  return (
+    <section>
+      // render the statistics here ...
+    </section>
+  );
+};
+
+export default DashboardCompanySatistics;
 ```
 
 ## publish(publication [, ... nParams])
