@@ -34,11 +34,11 @@
   ],
   "homepage": "https://github.com/vivekmunde/react-pusu#readme",
   "peerDependencies": {
-    "react": ">= 15 <= 16",
-    "react-dom": ">= 15 <= 16"
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0"
   },
   "dependencies": {
-    "pusu": "1.0.0"
+    "pusu": "^1.0.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.10",
