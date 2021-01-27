@@ -1,7 +1,7 @@
 {
   "name": "react-pusu",
-  "version": "1.1.1",
-  "description": "Simple pub-sub implementation APIs & HOCs for React Components",
+  "version": "2.0.0",
+  "description": "Simple pub-sub implementation APIs for React Components",
   "main": "./dist/index.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
@@ -34,14 +34,14 @@
   ],
   "homepage": "https://github.com/vivekmunde/react-pusu#readme",
   "peerDependencies": {
-    "react": ">= 15 <= 16",
-    "react-dom": ">= 15 <= 16"
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0"
   },
   "dependencies": {
-    "pusu": "1.0.0"
+    "pusu": "^1.0.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.5.5",
+    "@babel/cli": "^7.12.10",
     "@babel/core": "^7.5.5",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
