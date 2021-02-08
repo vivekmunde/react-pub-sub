@@ -29,7 +29,7 @@ import { createPublication } from 'react-pusu';
 export default createPublication('Refresh Page Data');
 ```
 
-### ***Unique publication every time***
+### Unique publication every time
 
 **Creation of a publication makes sure that each publication is unique in itself and removes the need of maintaining a unique key for each publication.**
 

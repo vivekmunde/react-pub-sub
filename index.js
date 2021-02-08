@@ -1,11 +1,7 @@
-import { createPublication, publish, subscribe } from 'pusu';
-import withPublish from './src/with-publish';
-import withSubscribe from './src/with-subscribe';
+'use strict';
 
-export {
-    createPublication,
-    publish,
-    subscribe,
-    withPublish,
-    withSubscribe
-};
+if (process.env.NODE_ENV === 'production') {
+  module.exports = require('./dist/react-pusu.production.js');
+} else {
+  module.exports = require('./dist/react-pusu.development.js');
+}

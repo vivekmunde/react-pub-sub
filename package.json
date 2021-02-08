@@ -2,9 +2,11 @@
   "name": "react-pusu",
   "version": "1.1.2",
   "description": "Simple pub-sub implementation APIs for React Components",
-  "main": "./dist/index.js",
+  "main": "./index.js",
   "scripts": {
-    "build": "webpack --config webpack.config.js",
+    "build-development": "webpack --config webpack.development.config.js",
+    "build-production": "webpack --config webpack.production.config.js",
+    "build": "npm run build-development && npm run build-production",
     "clean": "rimraf ./dist",
     "test": "jest",
     "prepublish": "npm run clean && npm run build"
@@ -38,10 +40,10 @@
     "react-dom": ">= 15 <= 16"
   },
   "dependencies": {
-    "pusu": "1.0.0"
+    "pusu": "^1.0.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.5.5",
+    "@babel/cli": "^7.12.13",
     "@babel/core": "^7.5.5",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
