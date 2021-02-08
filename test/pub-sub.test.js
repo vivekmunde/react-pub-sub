@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { mount } from 'enzyme';
 import { createPublication, publish } from 'pusu';
-import withSubscribe from '../src/with-subscribe';
-import useSubscribe from '../src/use-subscribe';
+import { withSubscribe, useSubscribe } from '../src';
 
 describe('with-pub-sub', () => {
   test('Should publish & call the subscribers with args', () => {
