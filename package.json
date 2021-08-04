@@ -2,13 +2,13 @@
   "name": "react-pusu",
   "version": "2.0.1",
   "description": "Simple pub-sub implementation APIs for React Components",
-  "main": "./lib/index.js",
-  "module": "./es/index.js",
-  "types": "./lib/index.d.ts",
+  "main": "./lib/cjs/index.js",
+  "module": "./lib/es/index.js",
+  "types": "./lib/es/index.d.ts",
   "scripts": {
     "build": "npm run clean && npm run compile-ts",
-    "clean": "rimraf ./dist && rimraf ./lib && rimraf ./es",
-    "compile-ts": "npm run clean && tsc -p tsconfig-es.json && tsc -p tsconfig-umd.json",
+    "clean": "rimraf ./lib",
+    "compile-ts": "npm run clean && tsc -p tsconfig-esm.json && tsc -p tsconfig-cjs.json",
     "test": "npm run compile-ts && jest",
     "prepublish": "npm run clean && npm run build"
   },
@@ -22,11 +22,8 @@
     "url": "https://github.com/vivekmunde/react-pusu/issues"
   },
   "files": [
-    "dist",
     "lib",
-    "es",
-    "src",
-    "index.js"
+    "src"
   ],
   "keywords": [
     "react",
