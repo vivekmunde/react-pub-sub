@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { mount } from 'enzyme';
-import { createPublication, publish, withSubscribe, useSubscribe } from '../lib';
+import { createPublication, publish, withSubscribe, useSubscribe } from '../lib/cjs';
 
 describe('with-pub-sub', () => {
   test('Should publish & call the subscribers with args', () => {
