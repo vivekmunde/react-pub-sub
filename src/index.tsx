@@ -57,7 +57,7 @@ export const withSubscribe: TWithSubscribe = (Component) => {
     }
 
     render() {
-      return <Component subscribe={this.rpSubscribe} />;
+      return <Component {...this.props} subscribe={this.rpSubscribe} />;
     }
   }
 
