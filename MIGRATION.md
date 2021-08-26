@@ -3,7 +3,8 @@
 
 ## Breaking change
 
-The versions 1.2 & 2.1 will allow only one parameter while publishing the data & subscribing to the data.
+- The versions 1.2 & 2.1 will need `pusu` as a separate dependency to be installed
+- The versions 1.2 & 2.1 will allow only one parameter while publishing the data & subscribing to the data.
 
 
 ### 1.1 & 2.0
