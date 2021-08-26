@@ -3,14 +3,14 @@
 
 ## Breaking change
 
-The versions 1.2 & 2.1 will allow only one parameter while publishing teh data & subscribing to the data.
+The versions 1.2 & 2.1 will allow only one parameter while publishing the data & subscribing to the data.
 
 
 ### 1.1 & 2.0
 
 The versions 1.1 & 2.0 were allowing more than one parameters while publishing the data.
 
-In the example below, publication is publishing date and company id as two different parameters.
+In the example below, publisher is publishing date and company id as two different parameters.
 
 ```
 import { publish } from 'pusu';
@@ -60,9 +60,9 @@ export default DashboardCompanySatistics;
 
 ### 1.2 & 2.1
 
-The versions 1.2 & 2.1 will allow only one parameter while publishing teh data & subscribing to the data.
+The versions 1.2 & 2.1 will allow only one parameter while publishing the data & subscribing to the data.
 
-In the example below, publication is publishing one JSON object consisting of date and company id.
+In the example below, publisher is publishing one JSON object consisting of date and company id.
 
 ```
 import { publish } from 'pusu';
