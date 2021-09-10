@@ -1,34 +1,33 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { createPublication } from 'pusu';
-import { withPublish, withSubscribe } from '../src';
+import { createPublication, publish, withSubscribe } from '../lib/cjs';
 
-describe('with-pub-sub', () => {
+describe('pub-sub', () => {
   test('Should publish & call the subscribers with args', () => {
     expect.hasAssertions();
 
     const testData1 = 'test-data1';
     const testData2 = { data: 'test-data2' };
-    const testData3 = ['test-data3'];
+    const testData3 = ['test-data3', 'test-data3'];
 
     const publication = createPublication('test');
 
-    const PublisherHoc = withPublish(({ publish }) => (
+    const PublisherHoc = () => (
       <button
         id="btn1"
         onClick={() => {
-          publish(publication, testData1, testData2, testData3);
+          publish(publication, { testData1, testData2, testData3 });
         }}
       >
         Publisher
       </button>
-    ));
+    );
 
     const subscriber1Listener = jest.fn(() => { });
 
     class Subscriber1 extends React.Component {
-      constructor(props, context) {
-        super(props, context);
+      constructor(props) {
+        super(props);
         this.state = {
           data: {
             testData1: null, testData2: { data: null }, testData3: []
@@ -37,9 +36,9 @@ describe('with-pub-sub', () => {
         props.subscribe(publication, this.subscriber);
       }
 
-      subscriber = (testData1, testData2, testData3) => {
+      subscriber = ({ testData1, testData2, testData3 }) => {
         this.setState({ data: { testData1, testData2, testData3 } });
-        subscriber1Listener(testData1, testData2, testData3);
+        subscriber1Listener({ testData1, testData2, testData3 });
       }
 
       render() {
@@ -53,55 +52,21 @@ describe('with-pub-sub', () => {
       }
     }
 
-    const subscriber2Listener = jest.fn(() => { });
-
-    class Subscriber2 extends React.Component {
-      constructor(props, context) {
-        super(props, context);
-        this.state = {
-          data: {
-            testData1: null, testData2: { data: null }, testData3: []
-          }
-        };
-        props.subscribe(publication, this.subscriber);
-      }
-
-      subscriber = (testData1, testData2, testData3) => {
-        this.setState({ data: { testData1, testData2, testData3 } });
-        subscriber2Listener(testData1, testData2, testData3);
-      }
-
-      render() {
-        return (
-          <span
-            id="span2"
-          >
-            {this.state.data.testData1}{this.state.data.testData2.data}{this.state.data.testData3.join('')}
-          </span>
-        )
-      }
-    }
-
     const SubscriberHoc1 = withSubscribe(Subscriber1);
-    const SubscriberHoc2 = withSubscribe(Subscriber2);
 
     const wrapper = mount(
       <div>
         <PublisherHoc />
         <SubscriberHoc1 />
-        <SubscriberHoc2 />
       </div>
     );
 
     expect(wrapper.find('#div1').text()).toEqual('');
-    expect(wrapper.find('#span2').text()).toEqual('');
 
     wrapper.find('#btn1').simulate('click');
 
-    expect(wrapper.find('#div1').text()).toEqual(`${testData1}${testData2.data}${testData3.join()}`);
-    expect(wrapper.find('#span2').text()).toEqual(`${testData1}${testData2.data}${testData3.join()}`);
+    expect(wrapper.find('#div1').text()).toEqual(`${testData1}${testData2.data}${testData3.join('')}`);
     expect(subscriber1Listener).toHaveBeenCalledTimes(1);
-    expect(subscriber2Listener).toHaveBeenCalledTimes(1);
   });
 
   test('Should unsubscribe from publication on component removal', () => {
@@ -111,7 +76,7 @@ describe('with-pub-sub', () => {
 
     const publication = createPublication('test');
 
-    const PublisherHoc = withPublish(({ publish }) => (
+    const PublisherHoc = () => (
       <button
         id="btn1"
         onClick={() => {
@@ -120,13 +85,13 @@ describe('with-pub-sub', () => {
       >
         Publisher
       </button>
-    ));
+    );
 
     const subscriber1Listener = jest.fn(() => { });
 
     class Subscriber1 extends React.Component {
-      constructor(props, context) {
-        super(props, context);
+      constructor(props) {
+        super(props);
         props.subscribe(publication, subscriber1Listener);
       }
 
@@ -141,31 +106,11 @@ describe('with-pub-sub', () => {
       }
     }
 
-    const subscriber2Listener = jest.fn(() => { });
-
-    class Subscriber2 extends React.Component {
-      constructor(props, context) {
-        super(props, context);
-        props.subscribe(publication, subscriber2Listener);
-      }
-
-      render() {
-        return (
-          <span
-            id="span2"
-          >
-            Subscriber2
-          </span>
-        )
-      }
-    }
-
     const SubscriberHoc1 = withSubscribe(Subscriber1);
-    const SubscriberHoc2 = withSubscribe(Subscriber2);
 
     class MainComponent extends React.Component {
-      constructor(props, context) {
-        super(props, context);
+      constructor(props) {
+        super(props);
         this.state = { show: true };
       }
 
@@ -177,14 +122,13 @@ describe('with-pub-sub', () => {
         return (
           <div>
             <PublisherHoc />
-            <SubscriberHoc1 />
             <button
               id="btnToggle"
               onClick={this.toggle}
             >
               Toggle
-                        </button>
-            {this.state.show && <SubscriberHoc2 />}
+            </button>
+            {this.state.show && <SubscriberHoc1 />}
           </div>
         )
       }
@@ -197,9 +141,13 @@ describe('with-pub-sub', () => {
     wrapper.find('#btn1').simulate('click');
 
     expect(subscriber1Listener).toHaveBeenCalledWith(testData);
-    expect(subscriber2Listener).toHaveBeenCalledWith(testData);
     expect(subscriber1Listener).toHaveBeenCalledTimes(1);
-    expect(subscriber2Listener).toHaveBeenCalledTimes(1);
+
+    wrapper.find('#btnToggle').simulate('click');
+    wrapper.find('#btn1').simulate('click');
+
+    expect(subscriber1Listener).toHaveBeenCalledWith(testData);
+    expect(subscriber1Listener).toHaveBeenCalledTimes(1);
 
     testData = 'test-data-2';
 
@@ -208,27 +156,16 @@ describe('with-pub-sub', () => {
 
     expect(subscriber1Listener).toHaveBeenCalledWith(testData);
     expect(subscriber1Listener).toHaveBeenCalledTimes(2);
-    expect(subscriber2Listener).toHaveBeenCalledTimes(1);
-
-    testData = 'test-data-3';
-
-    wrapper.find('#btnToggle').simulate('click');
-    wrapper.find('#btn1').simulate('click');
-
-    expect(subscriber1Listener).toHaveBeenCalledWith(testData);
-    expect(subscriber2Listener).toHaveBeenCalledWith(testData);
-    expect(subscriber1Listener).toHaveBeenCalledTimes(3);
-    expect(subscriber2Listener).toHaveBeenCalledTimes(2);
   });
 
-  test('Should unsubscribe when called to unsubscribe explicitely', () => {
+  test('Should unsubscribe when called to unsubscribe explicitly', () => {
     expect.hasAssertions();
 
     const testData1 = 'test-data1';
 
     const publication = createPublication('test');
 
-    const PublisherHoc = withPublish(({ publish }) => (
+    const PublisherHoc = () => (
       <button
         id="btn1"
         onClick={() => {
@@ -237,13 +174,13 @@ describe('with-pub-sub', () => {
       >
         Publisher
       </button>
-    ));
+    );
 
     const subscriber1Listener = jest.fn(() => { });
 
     class Subscriber1 extends React.Component {
-      constructor(props, context) {
-        super(props, context);
+      constructor(props) {
+        super(props);
         this.state = {
           data: {
             testData1: null, testData2: { data: null }, testData3: []
@@ -265,7 +202,7 @@ describe('with-pub-sub', () => {
         return (
           <div>
             <div
-              id="div1"
+              id="div2"
             >
               {this.state.data.testData1}
             </div>
@@ -274,7 +211,7 @@ describe('with-pub-sub', () => {
               onClick={this.handleUnsubscribe}
             >
               Unsubscribe
-                        </button>
+            </button>
           </div>
         )
       }
@@ -304,14 +241,14 @@ describe('with-pub-sub', () => {
     expect(subscriber1Listener).toHaveBeenCalledTimes(2);
   });
 
-  test('Should not error on calling unsubscribe again even when it was unsubscribed explicitely before component removal', () => {
+  test('Should not error on calling unsubscribe again even when it was unsubscribed explicitly before component removal', () => {
     expect.hasAssertions();
 
     const testData1 = 'test-data1';
 
     const publication = createPublication('test');
 
-    const PublisherHoc = withPublish(({ publish }) => (
+    const PublisherHoc = () => (
       <button
         id="btn1"
         onClick={() => {
@@ -320,13 +257,13 @@ describe('with-pub-sub', () => {
       >
         Publisher
       </button>
-    ));
+    );
 
     const subscriber1Listener = jest.fn(() => { });
 
     class Subscriber1 extends React.Component {
-      constructor(props, context) {
-        super(props, context);
+      constructor(props) {
+        super(props);
         this.state = {
           data: {
             testData1: null, testData2: { data: null }, testData3: []
@@ -348,7 +285,7 @@ describe('with-pub-sub', () => {
         return (
           <div>
             <div
-              id="div1"
+              id="div2"
             >
               {this.state.data.testData1}
             </div>
@@ -357,7 +294,7 @@ describe('with-pub-sub', () => {
               onClick={this.handleUnsubscribe}
             >
               Unsubscribe
-                        </button>
+            </button>
           </div>
         )
       }
