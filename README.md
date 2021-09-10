@@ -77,12 +77,12 @@ const publication2 = createPublication('Refresh page data');
 console.log(publication1 === publication2); //false
 ```
 
-## publish(publication [, ... nParams])
+## publish(publication [data])
 **Parameters**:
 - `publication`: *(Required)* Object - Publication object created using the api `createPublication()`
-- `[, ... nParams]`: *(Optional)* Any - These parameters/arguments are passed as is to the subscribers listening to the publication. Its a way of passing data to the subscribers.
+- `[data]`: *(Optional)* Any - These parameters/arguments are passed as is to the subscribers listening to the publication. Its a way of passing data to the subscribers.
 
-`publish` method calls all the subscribers subscribed to the `publication` (provided as a first argument). It calls the subscribers with all the rest of the arguments/data (`[, ... nParams]`).
+`publish` method calls all the subscribers subscribed to the `publication` (provided as a first argument). It calls the subscribers with the data.
 
 ```
 import { publish } from 'pusu';
@@ -105,7 +105,7 @@ export default RefreshPageDataButton;
 ## subscribe(publication, subscriber)
 **Parameters**:
 - `publication`: *(Required)* Object - Publication object created using the api `createPublication`
-- `subscriber`: *(Required)* Function - A subscriber function which will be called by the publisher. This function will receive any argument(s) i.e. data published by the publisher.
+- `subscriber`: *(Required)* Function - A subscriber function which will be called by the publisher. This function will receive the data published by the publisher.
 
 **Return value**: Function - A function when called then the `subscriber` is unsubscribed and no longer called by the publisher.
 
