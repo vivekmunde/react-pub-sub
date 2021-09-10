@@ -37,8 +37,8 @@
   "homepage": "https://github.com/vivekmunde/react-pusu#readme",
   "peerDependencies": {
     "pusu": ">=1.1.0",
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0"
+    "react": ">= 16.8.0",
+    "react-dom": ">= 16.8.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.10",
