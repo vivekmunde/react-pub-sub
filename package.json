@@ -36,11 +36,9 @@
   ],
   "homepage": "https://github.com/vivekmunde/react-pusu#readme",
   "peerDependencies": {
+    "pusu": ">=1.1.0",
     "react": "^16.8.0",
     "react-dom": "^16.8.0"
-  },
-  "dependencies": {
-    "pusu": "git+https://github.com/vivekmunde/pusu.git#ts"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.10",
@@ -51,10 +49,10 @@
     "@types/react": "^16.8.25",
     "@types/react-dom": "^16.8.5",
     "babel-jest": "^24.8.0",
-    "babel-loader": "^8.0.6",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "jest": "^24.8.0",
+    "pusu": "^1.1.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "typescript": "^4.3.5"
