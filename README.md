@@ -77,7 +77,7 @@ const publication2 = createPublication('Refresh page data');
 console.log(publication1 === publication2); //false
 ```
 
-## publish(publication [data])
+## publish(publication, [data])
 **Parameters**:
 - `publication`: *(Required)* Object - Publication object created using the api `createPublication()`
 - `[data]`: *(Optional)* Any - These parameters/arguments are passed as is to the subscribers listening to the publication. Its a way of passing data to the subscribers.
