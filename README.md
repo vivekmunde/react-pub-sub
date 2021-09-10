@@ -1,6 +1,6 @@
 # react-pusu 
 
-Simple `pub-sub` implementation APIs, HOCs for [React](https://reactjs.org/) Components.
+Simple `pub-sub` implementation APIs, HOCs & Hooks for [React](https://reactjs.org/) Components.
 
 > **Pub-Sub** implementation is one of the effective ways and most useful when the components, which are rendered across the page, even under different component hierarchies, need to communicate with each other.
 A simple example can be, a data refresh button placed in the header of the application. On click of this button the page should reload the data from server. There can be multiple pages which may need this type of functionality. Also, there can be multiple sections on a page which need to reload the data using their own API calls (may be using redux). So all these pages & components can actually subscribe to the refresh publication event. The refresh button can, on click, publish the event. And then all the subscribers can reload the data (may be using redux) from server by calling their own apis.
@@ -10,6 +10,12 @@ A simple example can be, a data refresh button placed in the header of the appli
 |--|--|
 | >= React@16.8 | ^2.0.0 |
 | React@15, <= React@16.7 | ^1.0.0 |
+
+## How to install
+
+`yarn add pusu react-pusu`
+
+`npm install --save pusu react-pusu`
 
 ## createPublication([name])
 **Parameters**:
@@ -21,12 +27,24 @@ Creates & returns a unique new publication object.
 
 Publication object is a simple javascript object `{ subscribers: [] }` which has an array named `subscribers`. The array `subscribers` actually holds the references to the subscriber functions. Result is, all the subscribers (i.e. functions) of the publication are mapped inside the publication object itself. Whenever a publiser publishes any data for a publication then all the subscribers inside the publication are called with this data.
 
+TypeScript
+
+```
+// refresh-page-data-publication.ts
+
+import { createPublication } from 'pusu';
+
+export default createPublication<{ asOfDate: Date }>('Refresh page data');
+```
+
+JavaScript
+
 ```
 // refresh-page-data-publication.js
 
-import { createPublication } from 'react-pusu';
+import { createPublication } from 'pusu';
 
-export default createPublication('Refresh Page Data');
+export default createPublication('Refresh page Data');
 ```
 
 ### Unique publication every time
@@ -37,31 +55,44 @@ Even if multiple publications created with same `name`, then each publication wi
 
 Below code creates two separate unique publications `publication1` & `publication2` even though the publication names are same. Name is just for the sake of naming the publication so that its useful during debugging any issues.
 
-```
-import { createPublication } from 'react-pusu';
+TypeScript
 
-const publication1 = createPublication('Refresh Page Data');
-const publication2 = createPublication('Refresh Page Data');
+```
+import { createPublication } from 'pusu';
+
+const publication1 = createPublication<{ asOfDate: Date }>('Refresh page data');
+const publication2 = createPublication<{ asOfDate: Date }>('Refresh page data');
 
 console.log(publication1 === publication2); //false
 ```
 
-## publish(publication [, ... nParams])
-**Parameters**:
-- `publication`: *(Required)* Object - Publication object created using the api `createPublication()`
-- `[, ... nParams]`: *(Optional)* Any - These parameters/arguments are passed as is to the subscribers listening to the publication. Its a way of passing data to the subscribers.
-
-`publish` method calls all the subscribers subscribed to the `publication` (provided as a first argument). It calls the subscribers with all the rest of the arguments/data (`[, ... nParams]`).
+JavaScript
 
 ```
-import { publish } from 'react-pusu';
+import { createPublication } from 'pusu';
+
+const publication1 = createPublication('Refresh page data');
+const publication2 = createPublication('Refresh page data');
+
+console.log(publication1 === publication2); //false
+```
+
+## publish(publication, [data])
+**Parameters**:
+- `publication`: *(Required)* Object - Publication object created using the api `createPublication()`
+- `[data]`: *(Optional)* Any - These parameters/arguments are passed as is to the subscribers listening to the publication. Its a way of passing data to the subscribers.
+
+`publish` method calls all the subscribers subscribed to the `publication` (provided as a first argument). It calls the subscribers with the data.
+
+```
+import { publish } from 'pusu';
 import refreshPageDataPublication from './publications/refresh-page-data-publication';
 
 const RefreshPageDataButton = ({ company }) => (
   <button
     onClick={()=> {
       // Publish the data 
-      publish(publication, new Date(), company._id);
+      publish(publication, {asOfDate: new Date() };
     }}
   >
     Refresh
@@ -74,14 +105,14 @@ export default RefreshPageDataButton;
 ## subscribe(publication, subscriber)
 **Parameters**:
 - `publication`: *(Required)* Object - Publication object created using the api `createPublication`
-- `subscriber`: *(Required)* Function - A subscriber function which will be called by the publisher. This function will receive any argument(s) i.e. data published by the publisher.
+- `subscriber`: *(Required)* Function - A subscriber function which will be called by the publisher. This function will receive the data published by the publisher.
 
 **Return value**: Function - A function when called then the `subscriber` is unsubscribed and no longer called by the publisher.
 
-> Using HOC `withSubscribe` removes the need of unsubscribe implementation, which is explained in the later section.
+> Using HOC `withSubscribe` or hook `useSubscribe` removes the need of unsubscribe implementation, which is explained in the later sections.
 
 ```
-import { subscribe } from 'react-pusu';
+import { subscribe } from 'pusu';
 import refreshPageDataPublication from './publications/refresh-page-data-publication';
 
 class DashboardCompanySatistics extends React.Component {
@@ -92,7 +123,7 @@ class DashboardCompanySatistics extends React.Component {
     this.unsubscribe = props.subscribe(refreshPageDataPublication, this.refreshData);
   }
 
-  refreshData = (asOf, companyId) => {
+  refreshData = ({ asOfDate }) => {
     // load the data (may be using redux)
   }
 
@@ -103,7 +134,7 @@ class DashboardCompanySatistics extends React.Component {
     }
 
     // Note: 
-    // Using HOC `withSubscribe` removes the need of above unsubscribe implementation, which is explained in the later section. 
+    // Using HOC `withSubscribe` or hook `useSubscribe` removes the need of above unsubscribe implementation, which is explained in the later sections. 
   }
   
   render() {
@@ -136,7 +167,7 @@ class DashboardCompanySatistics extends React.Component {
     props.subscribe(refreshPageDataPublication, this.refreshData);
   }
 
-  refreshData = (asOf, companyId) => {
+  refreshData = ({ asOfDate }) => {
     // load the data (may be using redux)
   }
   
@@ -167,7 +198,7 @@ class DashboardCompanySatistics extends React.Component {
     this.unsubscribeFromRefreshPublication = props.subscribe(refreshPageDataPublication, this.refreshData);
   }
 
-  refreshData = (asOf, companyId) => {
+  refreshData = ({ asOfDate }) => {
     // load the data (may be using redux)
   }
 
@@ -186,6 +217,143 @@ class DashboardCompanySatistics extends React.Component {
 }
 
 export default withSubscribe(DashboardCompanySatistics);
+```
+
+## Migrating from 1.1 to 1.2
+
+
+### Breaking change
+
+- The version 1.2 will need `pusu` as a separate dependency to be installed
+- The version 1.2 will allow only one parameter while publishing the data & subscribing to the data.
+
+
+### 1.1
+
+The version 1.1 wes allowing more than one parameters while publishing the data.
+
+In the example below, publisher is publishing date and company id as two different parameters.
+
+```
+import { publish } from 'pusu';
+import refreshPageDataPublication from './publications/refresh-page-data-publication';
+
+const RefreshPageDataButton = ({ company }) => (
+  <button
+    onClick={()=> {
+      // Publish the data 
+      publish(publication, new Date(), company._id);
+    }}
+  >
+    Refresh
+  </button>
+);
+
+export default RefreshPageDataButton;
+```
+
+The subscriber receives two arguments as date and company id.
+ 
+```
+import { useSubscribe } from 'react-pusu';
+import refreshPageDataPublication from './publications/refresh-page-data-publication';
+
+const DashboardCompanySatistics = () => {
+  const subscribe = useSubscribe();
+  
+  useEffect(() => {
+    const refreshData = (asOf, companyId) => {
+      // load the data (may be using redux)
+    }
+
+    subscribe(refreshPageDataPublication, refreshData);
+  }
+   
+  return (
+    <section>
+      // render the statistics here ...
+    </section>
+  );
+};
+
+export default DashboardCompanySatistics;
+```
+
+### 1.2
+
+The version 1.2 will allow only one parameter while publishing the data & subscribing to the data.
+
+In the example below, publisher is publishing one JSON object consisting of date and company id.
+
+```
+import { publish } from 'pusu';
+import refreshPageDataPublication from './publications/refresh-page-data-publication';
+
+const RefreshPageDataButton = ({ company }) => (
+  <button
+    onClick={()=> {
+      // Publish the data 
+      publish(publication, { asOfDate: new Date(), companyId: company._id });
+    }}
+  >
+    Refresh
+  </button>
+);
+
+export default RefreshPageDataButton;
+```
+
+The subscriber receives it as the same JSON object consisting of date and company id.
+
+```
+import { withSubscribe } from 'react-pusu';
+import refreshPageDataPublication from './publications/refresh-page-data-publication';
+
+class DashboardCompanySatistics extends React.Component {
+  constructor(props, context) {
+    super(props, context);
+    props.subscribe(refreshPageDataPublication, this.refreshData);
+  }
+
+  refreshData = ({ asOfDate, companyId }) => {
+    // load the data (may be using redux)
+  }
+  
+  render() {
+    return (
+      <section>
+        // render the statistics here ...
+      </section>
+    );
+  }
+}
+
+export default withSubscribe(DashboardCompanySatistics);
+```
+
+```
+import { useSubscribe } from 'react-pusu';
+import refreshPageDataPublication from './publications/refresh-page-data-publication';
+
+const DashboardCompanySatistics = () => {
+  const subscribe = useSubscribe();
+  
+  useEffect(() => {
+    const refreshData = ({ asOfDate, companyId }) => {
+      // load the data (may be using redux)
+    }
+
+    subscribe(refreshPageDataPublication, refreshData);
+  }
+   
+  return (
+    <section>
+      // render the statistics here ...
+    </section>
+  );
+};
+
+export default DashboardCompanySatistics;
 ```
 
 ## License
