@@ -17,7 +17,7 @@ A simple example can be, a data refresh button placed in the header of the appli
 
 `npm install --save pusu react-pusu`
 
-## createPublication([name])
+## createPublication<T>([name])
 **Parameters**:
 - `name`: *(Optional)* String - Publication name. Useful in debugging.
 
