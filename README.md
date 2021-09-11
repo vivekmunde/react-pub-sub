@@ -17,7 +17,7 @@ A simple example can be, a data refresh button placed in the header of the appli
 
 `npm install --save pusu react-pusu`
 
-## createPublication([name])
+## createPublication<T>([name])
 **Parameters**:
 - `name`: *(Optional)* String - Publication name. Useful in debugging.
 
@@ -183,7 +183,7 @@ class DashboardCompanySatistics extends React.Component {
 export default withSubscribe(DashboardCompanySatistics);
 ```
 
-#### Unsubscribing explicitely 
+#### Unsubscribing explicitly 
 `props.subscribe`, when called, returns a function which can be called to unsubscribe from the publication. Sometimes component may need to unsubscribe based on some condition or action, for those cases the function returned by `props.subscribe` can be called to unsubscribe.
 
 ```
