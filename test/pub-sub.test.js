@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { mount } from 'enzyme';
-import { createPublication, publish } from 'pusu';
-import { withSubscribe, useSubscribe } from '../src';
+import { createPublication, publish, withSubscribe, useSubscribe } from '../lib/cjs';
 
 describe('with-pub-sub', () => {
   test('Should publish & call the subscribers with args', () => {
@@ -17,7 +16,7 @@ describe('with-pub-sub', () => {
       <button
         id="btn1"
         onClick={() => {
-          publish(publication, testData1, testData2, testData3);
+          publish(publication, { testData1, testData2, testData3 });
         }}
       >
         Publisher
@@ -27,8 +26,8 @@ describe('with-pub-sub', () => {
     const subscriber1Listener = jest.fn(() => { });
 
     class Subscriber1 extends React.Component {
-      constructor(props, context) {
-        super(props, context);
+      constructor(props) {
+        super(props);
         this.state = {
           data: {
             testData1: null, testData2: { data: null }, testData3: []
@@ -37,9 +36,9 @@ describe('with-pub-sub', () => {
         props.subscribe(publication, this.subscriber);
       }
 
-      subscriber = (testData1, testData2, testData3) => {
+      subscriber = ({ testData1, testData2, testData3 }) => {
         this.setState({ data: { testData1, testData2, testData3 } });
-        subscriber1Listener(testData1, testData2, testData3);
+        subscriber1Listener({ testData1, testData2, testData3 });
       }
 
       render() {
@@ -65,9 +64,9 @@ describe('with-pub-sub', () => {
       const subscribe = useSubscribe();
 
       useEffect(() => {
-        const subscriber = (testData1, testData2, testData3) => {
+        const subscriber = ({ testData1, testData2, testData3 }) => {
           setState({ data: { testData1, testData2, testData3 } });
-          subscriber2Listener(testData1, testData2, testData3);
+          subscriber2Listener({ testData1, testData2, testData3 });
         };
         subscribe(publication, subscriber);
       }, []);
@@ -123,8 +122,8 @@ describe('with-pub-sub', () => {
     const subscriber1Listener = jest.fn(() => { });
 
     class Subscriber1 extends React.Component {
-      constructor(props, context) {
-        super(props, context);
+      constructor(props) {
+        super(props);
         props.subscribe(publication, subscriber1Listener);
       }
 
@@ -160,8 +159,8 @@ describe('with-pub-sub', () => {
     const SubscriberHoc1 = withSubscribe(Subscriber1);
 
     class MainComponent extends React.Component {
-      constructor(props, context) {
-        super(props, context);
+      constructor(props) {
+        super(props);
         this.state = { show: true };
       }
 
@@ -239,8 +238,8 @@ describe('with-pub-sub', () => {
     const subscriber2Listener = jest.fn(() => { });
 
     class Subscriber1 extends React.Component {
-      constructor(props, context) {
-        super(props, context);
+      constructor(props) {
+        super(props);
         this.state = {
           data: {
             testData1: null, testData2: { data: null }, testData3: []
@@ -312,7 +311,7 @@ describe('with-pub-sub', () => {
             onClick={handleUnsubscribe}
           >
             Unsubscribe
-            </button>
+          </button>
         </div>
       );
     };
@@ -368,8 +367,8 @@ describe('with-pub-sub', () => {
     const subscriber2Listener = jest.fn(() => { });
 
     class Subscriber1 extends React.Component {
-      constructor(props, context) {
-        super(props, context);
+      constructor(props) {
+        super(props);
         this.state = {
           data: {
             testData1: null, testData2: { data: null }, testData3: []
@@ -441,7 +440,7 @@ describe('with-pub-sub', () => {
             onClick={handleUnsubscribe}
           >
             Unsubscribe
-            </button>
+          </button>
         </div>
       );
     };
