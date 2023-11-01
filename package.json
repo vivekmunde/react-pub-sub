@@ -55,6 +55,6 @@
     "pusu": "^1.1.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
-    "typescript": "^4.3.5"
+    "typescript": "^5.2.2"
   }
 }
