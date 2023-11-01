@@ -1,24 +1,17 @@
+import * as pusu from 'pusu';
 import React, { useEffect, useRef } from 'react';
-import {
-  TSubscribe,
-  createPublication as pusuCreatePublication,
-  publish as pusuPublish,
-  subscribe as pusuSubscribe,
-} from 'pusu';
 
-export type TUseSubscribe = () => TSubscribe;
+export { createPublication, publish, subscribe } from 'pusu';
 
-export const createPublication = pusuCreatePublication;
+export type { TCreatePublication, TPublication, TPublish, TSubscribe } from 'pusu';
 
-export const publish = pusuPublish;
-
-export const subscribe = pusuSubscribe;
+export type TUseSubscribe = () => pusu.TSubscribe;
 
 export const useSubscribe: TUseSubscribe = () => {
   const ref = useRef<{ subscriptions: (() => void)[] }>({ subscriptions: [] });
 
-  const rpSubscribe: TSubscribe = (publication, subscriber) => {
-    const unsubscribe = pusuSubscribe(publication, subscriber);
+  const subscribe: pusu.TSubscribe = (publication, subscriber) => {
+    const unsubscribe = pusu.subscribe(publication, subscriber);
     ref.current.subscriptions.push(unsubscribe);
     return unsubscribe;
   };
@@ -31,34 +24,23 @@ export const useSubscribe: TUseSubscribe = () => {
     return unsubscribeAll;
   }, []);
 
-  return rpSubscribe;
+  return subscribe;
 };
 
-export type TWithSubscribe = (Component: React.ComponentType<{ subscribe: TSubscribe }>) => React.ComponentType;
+export type TWithSubscribe = <P, S>(
+  Component: React.ComponentClass<P & { subscribe: pusu.TSubscribe }, S>
+    | React.FunctionComponent<P & { subscribe: pusu.TSubscribe }>
+) => React.FC<P>;
 
-export const withSubscribe: TWithSubscribe = (Component) => {
+export const withSubscribe: TWithSubscribe = <P, S>(
+  Component: React.ComponentClass<P & { subscribe: pusu.TSubscribe }, S>
+    | React.FunctionComponent<P & { subscribe: pusu.TSubscribe }>
+) => {
+  const Subscribe: React.FC<P> = (props) => {
+    const subscribe = useSubscribe();
 
-  return class Subscribe extends React.Component {
+    return <Component {...props} subscribe={subscribe} />;
+  };
 
-    subscriptions: (() => void)[] = []
-
-    rpSubscribe: TSubscribe = (publication, subscriber) => {
-      const unsubscribe = pusuSubscribe(publication, subscriber);
-      this.subscriptions.push(unsubscribe);
-      return unsubscribe;
-    }
-
-    unsubscribeAll = () => {
-      this.subscriptions.forEach(it => it());
-    }
-
-    componentWillUnmount() {
-      this.unsubscribeAll();
-    }
-
-    render() {
-      return <Component {...this.props} subscribe={this.rpSubscribe} />;
-    }
-  }
-
+  return Subscribe;
 }
