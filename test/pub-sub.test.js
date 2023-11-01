@@ -1,6 +1,6 @@
-import React from 'react';
 import { mount } from 'enzyme';
-import { createPublication, publish, withSubscribe } from '../lib/cjs';
+import React from 'react';
+import { createPublication, publish, withSubscribe } from '../lib/es';
 
 describe('pub-sub', () => {
   test('Should publish & call the subscribers with args', () => {
