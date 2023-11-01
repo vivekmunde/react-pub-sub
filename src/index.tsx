@@ -1,20 +1,11 @@
+import * as pusu from 'pusu';
 import React from 'react';
-import {
-  TSubscribe,
-  createPublication as pusuCreatePublication,
-  publish as pusuPublish,
-  subscribe as pusuSubscribe,
-} from 'pusu';
 
-export type TUseSubscribe = () => TSubscribe;
+export { createPublication, publish, subscribe } from 'pusu';
 
-export const createPublication = pusuCreatePublication;
+export type { TCreatePublication, TPublication, TPublish, TSubscribe } from 'pusu';
 
-export const publish = pusuPublish;
-
-export const subscribe = pusuSubscribe;
-
-export type TWithSubscribe = (Component: React.ComponentType<{ subscribe: TSubscribe }>) => React.ComponentType;
+export type TWithSubscribe = (Component: React.ComponentType<{ subscribe: pusu.TSubscribe }>) => React.ComponentType;
 
 export const withSubscribe: TWithSubscribe = (Component) => {
 
@@ -22,8 +13,8 @@ export const withSubscribe: TWithSubscribe = (Component) => {
 
     subscriptions: (() => void)[] = []
 
-    rpSubscribe: TSubscribe = (publication, subscriber) => {
-      const unsubscribe = pusuSubscribe(publication, subscriber);
+    subscribe: pusu.TSubscribe = (publication, subscriber) => {
+      const unsubscribe = pusu.subscribe(publication, subscriber);
       this.subscriptions.push(unsubscribe);
       return unsubscribe;
     }
@@ -37,7 +28,7 @@ export const withSubscribe: TWithSubscribe = (Component) => {
     }
 
     render() {
-      return <Component {...this.props} subscribe={this.rpSubscribe} />;
+      return <Component {...this.props} subscribe={this.subscribe} />;
     }
   }
 }
